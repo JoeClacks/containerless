@@ -17,6 +17,7 @@ export declare class Cluster implements Resource {
     private region;
     private size;
     private max_memory_threshold;
+    private container_permissions;
     constructor(opts: any, clusterName: string);
     readonly defaultListenerName: string;
     readonly defaultTargetGroupName: string;

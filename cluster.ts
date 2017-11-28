@@ -37,8 +37,9 @@ export class Cluster implements Resource {
   private region: string
   private size: number
   private max_memory_threshold: number
+  private container_permissions: Array<string>
 
-  constructor(opts: any, clusterName: string) {
+    constructor(opts: any, clusterName: string) {
     if (opts.id) {
       this._id = opts.id
       this._securityGroup = opts.security_group || this.requireSecurityGroup()
@@ -50,7 +51,8 @@ export class Cluster implements Resource {
       this.size = opts.size || 1
       this.max_size = opts.max_size || this.size + 1
       this.min_size = opts.min_size || 1
-      this.max_memory_threshold = opts.max_memory_threshold || 80
+      this.max_memory_threshold = opts.max_memory_threshold || 80,
+      this.container_permissions = opts.container_permissions || []
     }
     // we always need a vpc and at least one subnet
     this.vpcId = opts.vpcId || this.requireVpcId()
@@ -201,7 +203,8 @@ export class Cluster implements Resource {
                       'ecr:GetDownloadUrlForLayer',
                       'ecr:GetAuthorizationToken',
                       'logs:CreateLogStream',
-                      'logs:PutLogEvents'
+                      'logs:PutLogEvents',
+                      ...this.container_permissions
                     ],
                     'Effect': 'Allow',
                     'Resource': '*'

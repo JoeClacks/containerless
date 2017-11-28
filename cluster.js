@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
-var Cluster = (function () {
+var Cluster = /** @class */ (function () {
     function Cluster(opts, clusterName) {
         // http://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-optimized_AMI_launch_latest.html
         this.amiIds = {
@@ -29,7 +29,8 @@ var Cluster = (function () {
             this.size = opts.size || 1;
             this.max_size = opts.max_size || this.size + 1;
             this.min_size = opts.min_size || 1;
-            this.max_memory_threshold = opts.max_memory_threshold || 80;
+            this.max_memory_threshold = opts.max_memory_threshold || 80,
+                this.container_permissions = opts.container_permissions || [];
         }
         // we always need a vpc and at least one subnet
         this.vpcId = opts.vpcId || this.requireVpcId();
@@ -191,7 +192,7 @@ var Cluster = (function () {
                                             'ecr:GetAuthorizationToken',
                                             'logs:CreateLogStream',
                                             'logs:PutLogEvents'
-                                        ],
+                                        ].concat(this.container_permissions),
                                         'Effect': 'Allow',
                                         'Resource': '*'
                                     }
